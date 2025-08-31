@@ -35,7 +35,7 @@ const FinalSurprisePage = () => {
       {/* Falling hearts animation */}
       {showRainOfHearts && (
         <div className="fixed inset-0 pointer-events-none">
-          {[...Array(20)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <HeartIcon
               key={i}
               className="absolute text-primary animate-bounce-in"

@@ -3,30 +3,40 @@ import { Button } from '@/components/ui/button';
 import { HeartIcon } from '@/components/ui/heart-icon';
 import { FloatingHearts } from '@/components/ui/floating-hearts';
 import { useQuest } from '@/contexts/QuestContext';
+import { useNavigate } from 'react-router-dom';
+import couple1 from '@/assets/couple-1.jpg';
+import couple2 from '@/assets/couple-2.jpg';
+import couple3 from '@/assets/couple-3.jpg';
 
 interface Card {
   id: number;
   symbol: string;
+  image?: string;
   isFlipped: boolean;
   isMatched: boolean;
 }
 
 const MemoryMatchPage = () => {
   const { goToNextPage, addCredit, completeCurrentPage } = useQuest();
+  const navigate = useNavigate();
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [gameCompleted, setGameCompleted] = useState(false);
   const [showCredit, setShowCredit] = useState(false);
 
-  const symbols = ['💕', '💖', '💝'];
+  const cardTypes = [
+    { symbol: '💕', image: couple1 },
+    { symbol: '💖', image: couple2 },
+    { symbol: '💝', image: couple3 }
+  ];
 
   useEffect(() => {
     // Create pairs of cards
     const newCards: Card[] = [];
-    symbols.forEach((symbol, index) => {
+    cardTypes.forEach((cardType, index) => {
       newCards.push(
-        { id: index * 2, symbol, isFlipped: false, isMatched: false },
-        { id: index * 2 + 1, symbol, isFlipped: false, isMatched: false }
+        { id: index * 2, symbol: cardType.symbol, image: cardType.image, isFlipped: false, isMatched: false },
+        { id: index * 2 + 1, symbol: cardType.symbol, image: cardType.image, isFlipped: false, isMatched: false }
       );
     });
     
@@ -94,7 +104,7 @@ const MemoryMatchPage = () => {
   };
 
   const handleNext = () => {
-    window.location.href = '/balloon-pop';
+    navigate('/balloon-pop');
   };
 
   return (
@@ -111,21 +121,32 @@ const MemoryMatchPage = () => {
             Find the matching pairs to unlock your next love message!
           </p>
           
-          <div className="grid grid-cols-3 gap-4 max-w-xs mx-auto">
+          <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto">
             {cards.map((card) => (
               <div
                 key={card.id}
-                className={`aspect-square bg-gradient-heart rounded-2xl flex items-center justify-center text-4xl cursor-pointer transition-all duration-300 hover:scale-105 shadow-romantic ${
+                className={`aspect-square bg-gradient-heart rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 shadow-romantic ${
                   card.isFlipped || card.isMatched 
-                    ? 'transform scale-105' 
-                    : 'hover-glow'
+                    ? 'transform scale-105 ring-2 ring-primary' 
+                    : 'hover:scale-105 hover-glow'
                 }`}
                 onClick={() => handleCardClick(card.id)}
               >
                 {(card.isFlipped || card.isMatched) ? (
-                  <span className="animate-bounce-in">{card.symbol}</span>
+                  <div className="w-full h-full relative animate-bounce-in">
+                    <img 
+                      src={card.image} 
+                      alt="Beautiful memory" 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-1 right-1">
+                      <span className="text-lg">{card.symbol}</span>
+                    </div>
+                  </div>
                 ) : (
-                  <HeartIcon className="text-primary-foreground" size={32} filled />
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-heart">
+                    <HeartIcon className="text-primary-foreground animate-pulse" size={32} filled />
+                  </div>
                 )}
               </div>
             ))}

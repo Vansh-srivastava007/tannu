@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { HeartIcon } from '@/components/ui/heart-icon';
 import { useQuest } from '@/contexts/QuestContext';
+import { useNavigate } from 'react-router-dom';
+import coupleImage from '@/assets/couple-1.jpg';
 
 const FinalSurprisePage = () => {
-  const { quest, addCredit, completeCurrentPage } = useQuest();
+  const { quest, addCredit, completeCurrentPage, resetQuest } = useQuest();
+  const navigate = useNavigate();
   const [showFinalMessages, setShowFinalMessages] = useState(false);
   const [showRainOfHearts, setShowRainOfHearts] = useState(false);
 
@@ -27,7 +30,8 @@ const FinalSurprisePage = () => {
   }, [addCredit, completeCurrentPage]);
 
   const restartJourney = () => {
-    window.location.reload();
+    resetQuest();
+    navigate('/');
   };
 
   return (
@@ -87,6 +91,13 @@ const FinalSurprisePage = () => {
         {showFinalMessages && (
           <div className="space-y-8 mb-12 animate-fade-in-up">
             <div className="bg-gradient-heart rounded-3xl p-8 shadow-dreamy">
+              <div className="flex justify-center mb-6">
+                <img 
+                  src={coupleImage} 
+                  alt="Our beautiful journey together" 
+                  className="w-32 h-32 rounded-full object-cover shadow-heart animate-pulse-love border-4 border-primary-foreground/30"
+                />
+              </div>
               <h2 className="font-romantic text-4xl text-primary-foreground mb-6">
                 A Special Message Just for You 💕
               </h2>

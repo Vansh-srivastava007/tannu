@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { HeartIcon } from '@/components/ui/heart-icon';
 import { FloatingHearts } from '@/components/ui/floating-hearts';
 import { useQuest } from '@/contexts/QuestContext';
+import { useNavigate } from 'react-router-dom';
+import coupleImage from '@/assets/couple-4.jpg';
 
 interface Balloon {
   id: number;
@@ -14,21 +16,23 @@ interface Balloon {
 
 const BalloonPopPage = () => {
   const { goToNextPage, addCredit, completeCurrentPage } = useQuest();
+  const navigate = useNavigate();
   const [balloons, setBalloons] = useState<Balloon[]>([]);
   const [poppedCount, setPoppedCount] = useState(0);
   const [gameCompleted, setGameCompleted] = useState(false);
   const [showCredit, setShowCredit] = useState(false);
+  const [showPhoto, setShowPhoto] = useState(false);
 
   useEffect(() => {
-    // Create 6 floating heart balloons
+    // Create 8 floating heart balloons with better positioning
     const newBalloons: Balloon[] = [];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       newBalloons.push({
         id: i,
-        x: 15 + (i % 3) * 30 + Math.random() * 10,
-        y: 20 + Math.floor(i / 3) * 40 + Math.random() * 15,
+        x: 10 + (i % 4) * 22 + Math.random() * 8,
+        y: 15 + Math.floor(i / 4) * 35 + Math.random() * 12,
         popped: false,
-        size: 40 + Math.random() * 20
+        size: 35 + Math.random() * 25
       });
     }
     setBalloons(newBalloons);
@@ -46,7 +50,11 @@ const BalloonPopPage = () => {
     const newPoppedCount = poppedCount + 1;
     setPoppedCount(newPoppedCount);
     
-    if (newPoppedCount === 6) {
+    if (newPoppedCount === 4) {
+      setShowPhoto(true);
+    }
+    
+    if (newPoppedCount === 8) {
       setGameCompleted(true);
       setTimeout(() => {
         setShowCredit(true);
@@ -57,7 +65,7 @@ const BalloonPopPage = () => {
   };
 
   const handleNext = () => {
-    window.location.href = '/final-surprise';
+    navigate('/final-surprise');
   };
 
   return (
@@ -70,12 +78,26 @@ const BalloonPopPage = () => {
         </h1>
         
         <div className="bg-card/90 backdrop-blur-sm rounded-3xl p-8 shadow-romantic mb-8">
+          {showPhoto && (
+            <div className="mb-6 animate-bounce-in">
+              <img 
+                src={coupleImage} 
+                alt="Magical moment together" 
+                className="w-24 h-24 rounded-full object-cover mx-auto shadow-heart border-4 border-primary/50"
+              />
+            </div>
+          )}
           <p className="font-display text-xl text-card-foreground mb-6">
             Pop all the floating hearts to reveal your magical message!
           </p>
           <p className="font-display text-lg text-muted-foreground">
-            Hearts popped: {poppedCount}/6
+            Hearts popped: {poppedCount}/8
           </p>
+          {showPhoto && (
+            <p className="font-display text-sm text-primary mt-3 animate-pulse">
+              Keep going! You're doing amazing! ✨
+            </p>
+          )}
         </div>
         
         <div className="relative h-96 mb-8">
@@ -94,19 +116,20 @@ const BalloonPopPage = () => {
             >
               {!balloon.popped ? (
                 <HeartIcon 
-                  className="text-primary animate-float-hearts hover-glow"
+                  className="text-primary animate-float-hearts hover-glow hover:text-primary/80 transition-all duration-200"
                   size={balloon.size}
                   filled
                 />
               ) : (
                 <div className="animate-sparkle">
-                  {[...Array(6)].map((_, i) => (
+                  <div className="text-2xl animate-bounce-in">💫</div>
+                  {[...Array(8)].map((_, i) => (
                     <div
                       key={i}
-                      className="absolute w-2 h-2 bg-primary rounded-full animate-bounce-in"
+                      className="absolute w-1.5 h-1.5 bg-primary rounded-full animate-bounce"
                       style={{
-                        left: `${(i % 3) * 20 - 20}px`,
-                        top: `${Math.floor(i / 3) * 20 - 20}px`,
+                        left: `${(i % 4) * 15 - 22.5}px`,
+                        top: `${Math.floor(i / 4) * 15 - 22.5}px`,
                         animationDelay: `${i * 0.1}s`
                       }}
                     />

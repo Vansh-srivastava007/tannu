@@ -3,25 +3,35 @@ import { Button } from '@/components/ui/button';
 import { HeartIcon } from '@/components/ui/heart-icon';
 import { FloatingHearts } from '@/components/ui/floating-hearts';
 import { useQuest } from '@/contexts/QuestContext';
+import { useNavigate } from 'react-router-dom';
+import coupleImage from '@/assets/couple-2.jpg';
 
 const HeartPuzzlePage = () => {
   const { goToNextPage, addCredit, completeCurrentPage, quest } = useQuest();
+  const navigate = useNavigate();
   const [heartClicked, setHeartClicked] = useState(false);
   const [showCredit, setShowCredit] = useState(false);
+  const [puzzleStep, setPuzzleStep] = useState(0);
 
   const handleHeartClick = () => {
-    if (!heartClicked) {
-      setHeartClicked(true);
+    if (puzzleStep === 0) {
+      setPuzzleStep(1);
       setTimeout(() => {
-        setShowCredit(true);
-        addCredit("You're the most beautiful part of my world 💕");
-        completeCurrentPage();
-      }, 500);
+        setPuzzleStep(2);
+        setTimeout(() => {
+          setHeartClicked(true);
+          setTimeout(() => {
+            setShowCredit(true);
+            addCredit("You're the most beautiful part of my world 💕");
+            completeCurrentPage();
+          }, 500);
+        }, 800);
+      }, 600);
     }
   };
 
   const handleNext = () => {
-    window.location.href = '/memory-match';
+    navigate('/memory-match');
   };
 
   return (
@@ -34,13 +44,26 @@ const HeartPuzzlePage = () => {
         </h1>
         
         <div className="bg-card/90 backdrop-blur-sm rounded-3xl p-8 shadow-romantic mb-8">
+          {puzzleStep >= 1 && (
+            <div className="mb-6 animate-fade-in">
+              <img 
+                src={coupleImage} 
+                alt="Sweet couple moment" 
+                className="w-20 h-20 rounded-full object-cover mx-auto shadow-heart animate-bounce-in border-4 border-primary/50"
+              />
+            </div>
+          )}
+          
           <p className="font-display text-xl text-card-foreground mb-8">
-            Click the heart to unlock your first love message!
+            {puzzleStep === 0 && "Click the heart to start unlocking your love message! 💕"}
+            {puzzleStep === 1 && "The magic is beginning... 🌟"}
+            {puzzleStep === 2 && "Almost there! One more click! ✨"}
+            {heartClicked && "Perfect! Your heart is glowing with love! 💖"}
           </p>
           
           <div 
             className={`relative mx-auto w-32 h-32 cursor-pointer transition-all duration-500 ${
-              heartClicked ? 'scale-150' : 'hover:scale-110'
+              heartClicked ? 'scale-150' : puzzleStep > 0 ? 'scale-125 animate-pulse' : 'hover:scale-110'
             }`}
             onClick={handleHeartClick}
           >
@@ -48,21 +71,39 @@ const HeartPuzzlePage = () => {
               className={`w-full h-full transition-all duration-500 ${
                 heartClicked 
                   ? 'text-primary animate-pulse-love' 
-                  : 'text-muted hover:text-primary animate-pulse'
+                  : puzzleStep > 0 
+                    ? 'text-primary/70 animate-pulse'
+                    : 'text-muted hover:text-primary animate-pulse'
               }`}
-              filled={heartClicked}
+              filled={heartClicked || puzzleStep > 0}
               size={128}
             />
             
-            {heartClicked && (
+            {puzzleStep >= 1 && !heartClicked && (
               <div className="absolute inset-0 animate-sparkle">
-                {[...Array(8)].map((_, i) => (
+                {[...Array(4)].map((_, i) => (
                   <div
                     key={i}
-                    className="absolute w-2 h-2 bg-primary rounded-full"
+                    className="absolute w-1 h-1 bg-primary rounded-full animate-bounce"
                     style={{
-                      left: `${20 + (i % 4) * 20}%`,
-                      top: `${20 + Math.floor(i / 4) * 60}%`,
+                      left: `${30 + (i % 2) * 40}%`,
+                      top: `${30 + Math.floor(i / 2) * 40}%`,
+                      animationDelay: `${i * 0.2}s`
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+            
+            {heartClicked && (
+              <div className="absolute inset-0 animate-sparkle">
+                {[...Array(12)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-2 h-2 bg-primary rounded-full animate-bounce"
+                    style={{
+                      left: `${10 + (i % 4) * 25}%`,
+                      top: `${10 + Math.floor(i / 4) * 30}%`,
                       animationDelay: `${i * 0.1}s`
                     }}
                   />

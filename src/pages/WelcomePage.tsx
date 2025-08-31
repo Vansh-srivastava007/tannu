@@ -3,13 +3,16 @@ import { Button } from '@/components/ui/button';
 import { HeartIcon } from '@/components/ui/heart-icon';
 import { FloatingHearts } from '@/components/ui/floating-hearts';
 import { useQuest } from '@/contexts/QuestContext';
+import { useNavigate } from 'react-router-dom';
 import heroImage from '@/assets/romantic-hero.jpg';
+import coupleImage from '@/assets/couple-1.jpg';
 
 const WelcomePage = () => {
   const { goToNextPage } = useQuest();
+  const navigate = useNavigate();
 
   const handleStartJourney = () => {
-    window.location.href = '/heart-puzzle';
+    navigate('/heart-puzzle');
   };
 
   return (
@@ -34,6 +37,13 @@ const WelcomePage = () => {
         </h1>
         
         <div className="bg-card/90 backdrop-blur-sm rounded-3xl p-8 shadow-romantic mb-8">
+          <div className="flex items-center justify-center mb-6">
+            <img 
+              src={coupleImage} 
+              alt="Beautiful couple moment" 
+              className="w-24 h-24 rounded-full object-cover shadow-heart animate-pulse-love border-4 border-primary/30"
+            />
+          </div>
           <p className="font-display text-xl md:text-2xl text-card-foreground leading-relaxed mb-6">
             I heard your mood is off... so I made this little game just for you. 
           </p>

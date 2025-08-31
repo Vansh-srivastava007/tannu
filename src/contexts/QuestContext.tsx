@@ -13,6 +13,7 @@ interface QuestContextType {
   goToNextPage: () => void;
   goToPage: (page: number) => void;
   addCredit: (message: string) => void;
+  resetQuest: () => void;
 }
 
 const QuestContext = createContext<QuestContextType | undefined>(undefined);
@@ -56,13 +57,18 @@ export const QuestProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  const resetQuest = () => {
+    setQuest(initialState);
+  };
+
   return (
     <QuestContext.Provider value={{
       quest,
       completeCurrentPage,
       goToNextPage,
       goToPage,
-      addCredit
+      addCredit,
+      resetQuest
     }}>
       {children}
     </QuestContext.Provider>
